@@ -4,6 +4,10 @@ import matplotlib.image as mpimg
 import matplotlib as mpl
 
 def img2uint8(img):
+    '''
+    Convert image to 8-bit format [0, 255].
+    '''
+
     vmin = img.min()
     vmax = img.max()
 
@@ -12,6 +16,17 @@ def img2uint8(img):
     return np.uint8(img)
 
 def plothist(h, color):
+    '''
+    Show histogram of an image.
+
+    Parameters
+    ----------
+    h : Array with a size (255, 1) that contains the intensity values of the
+        pixels of the grayscale image.
+
+    color : Color to display the histogram e.g. 'r'
+    '''
+
     fig, ax = plt.subplots(1, 1)
 
     ax.stem(h, linefmt = '{}-'.format(color), markerfmt = 'none', basefmt = 'k-', use_line_collection=True)
@@ -28,6 +43,12 @@ def plothist(h, color):
     plt.show()
 
 def hist(img):
+    '''
+    Get array of pixel intensity values in a grayscale image.
+
+    img : Image in grayscale.
+    '''
+
     if len(img.shape) > 2:
         raise ValueError('Image not in grayscale')
 
@@ -40,6 +61,10 @@ def hist(img):
     return h
 
 def cumhist(img):
+    '''
+    Get cumulative histogram of grayscale image.
+    '''
+
     h = hist(img)
 
     for i in range(1, len(h)):
@@ -48,6 +73,22 @@ def cumhist(img):
     return h
 
 def searchvmin(h, nx, ny, s1):
+    '''
+    Search min value with histogram.
+
+    Parameters
+    ----------
+    h : Array with a size (255, 1) that contains the intensity values of the
+        pixels of the grayscale image.
+    nx : x-dimension of the image.
+    ny : y-dimension of the image.
+    s1 : Percentage of pixels saturated to the min value.
+
+    Return
+    ------
+    vmin : New vmin.
+    '''
+
     vmin = h.tolist().index(min(min(h)))
     n = nx * ny
     while h[vmin + 1] <= n * (s1 / 100):
@@ -56,6 +97,22 @@ def searchvmin(h, nx, ny, s1):
     return int(vmin)
 
 def searchvmax(h, nx, ny, s2):
+    '''
+    Search max value with histogram.
+
+    Parameters
+    ----------
+    h : Array with a size (255, 1) that contains the intensity values of the
+        pixels of the grayscale image.
+    nx : x-dimension of the image.
+    ny : y-dimension of the image.
+    s2 : percentage of pixels saturated to the max value.
+
+    Return
+    ------
+    vmax : New vmax.
+    '''
+
     vmax = h.tolist().index(max(max(h))) - 1
     n = nx * ny
     while h[vmax - 1] > n * (1 - (s2 / 100)):
@@ -67,6 +124,11 @@ def searchvmax(h, nx, ny, s2):
     return int(vmax)
 
 def saturate_rescale_pixels(img, vmin, vmax):
+    '''
+    The pixels are updated and the image is rescaled in [vmin vmax] by means of
+    an affine transformation.
+    '''
+
     img = np.where(img < vmin, vmin, img)
     img = np.where(img > vmax, vmax, img)
 
@@ -77,6 +139,18 @@ def saturate_rescale_pixels(img, vmin, vmax):
     return img
 
 def scb(img, s1, s2):
+    '''
+    Simplest Color Balance algoritm.
+
+    img : RGB or Grayscale image.
+    s1 : Percentage of pixels saturated to the min value.
+    s2 : percentage of pixels saturated to the max value.
+
+    Return
+    ------
+    out : Image with algorithm applied.
+    '''
+
     if not (1 <= s1 <= 20 and 1 <= s2 <= 20):
         raise ValueError('val min = 1, val max = 20')
 
