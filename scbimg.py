@@ -129,8 +129,8 @@ def saturate_rescale_pixels(img, vmin, vmax):
     an affine transformation.
     '''
 
-    img = np.where(img < vmin, vmin, img)
-    img = np.where(img > vmax, vmax, img)
+    np.putmask(img, img < vmin, vmin)
+    np.putmask(img, img > vmax, vmax)
 
     for m in range(img.shape[0]):
         for n in range(img.shape[1]):
@@ -185,7 +185,7 @@ if __name__ == '__main__':
 
     fig, (img_og, img_scb) = plt.subplots(ncols=2, nrows=1)
 
-    img_og.imshow(img, cmap='gray')
+    img_og.imshow(img2uint8(img), cmap='gray')
     img_og.set_title('Input origunal image')
     img_og.set_xticks([]), img_og.set_yticks([])
 
