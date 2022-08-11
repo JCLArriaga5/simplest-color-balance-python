@@ -31,23 +31,12 @@ Choose the percentage of pixels saturated to black (s1) and white (s2). For exam
 ```Python
 img = mpimg.imread('./images/lenna.png')
 
-s1 = 1.5
-s2 = 1.5
+  s1 = 1.5
+  s2 = 1.5
 
-print('Wait...')
-out = scb(img, s1, s2)
-
-fig, (img_og, img_scb) = plt.subplots(ncols=2, nrows=1)
-
-img_og.imshow(img, cmap='gray')
-img_og.set_title('Input origunal image')
-img_og.set_xticks([]), img_og.set_yticks([])
-
-img_scb.imshow(out, cmap='gray')
-img_scb.set_title('Output Simplest Color Balance image \n $S_1$ = {} \n $S_2$ = {}'.format(s1, s2))
-img_scb.set_xticks([]), img_scb.set_yticks([])
-
-plt.show()
+  print('Wait...')
+  out = scb(img, s1, s2)
+  plotresult(img, out)
 ```
 
 <p align="center"><img src="images/scb-lenna.png"></p>
