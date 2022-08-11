@@ -3,6 +3,24 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib as mpl
 
+def rgb2gray(img):
+    """
+    Conversion of a RGB image to a gray image by the Luminosity method
+    Parameters
+    ----------------
+    img : The function receives a grayscale image of N * M dimensions
+    Returns
+    ----------------
+    The function returns a grayscale image by the Luminosity method
+    """
+
+    img = img2uint8(img)
+    R = 0.2125 * (np.double(img[:,:,0]))
+    G = 0.7154 * (np.double(img[:,:,1]))
+    B = 0.0721 * (np.double(img[:,:,2]))
+
+    return np.uint8(R + G + B)
+
 def img2uint8(img):
     '''
     Convert image to 8-bit format [0, 255].
@@ -15,7 +33,28 @@ def img2uint8(img):
 
     return np.uint8(img)
 
-def plothist(h, color):
+def plotresult(img_in, img_out):
+    """
+    Plot comparation images before and after Simplest Color Balance
+    """
+
+    fig, ((img_og, img_scb), (hist_og, hist_scb)) = plt.subplots(ncols=2, nrows=2, figsize=(12, 9))
+
+    img_og.imshow(img2uint8(img_in), cmap='gray')
+    img_og.set_title('Input origunal image')
+    img_og.set_xticks([]), img_og.set_yticks([])
+    hist_og.set_title('Input image histogram')
+    plothist(hist(rgb2gray(img)), 'k', fig, hist_og)
+
+    img_scb.imshow(img_out, cmap='gray')
+    img_scb.set_title('Output Simplest Color Balance image \n $S_1$ = {} \n $S_2$ = {}'.format(s1, s2))
+    img_scb.set_xticks([]), img_scb.set_yticks([])
+    hist_scb.set_title('Output Simplest Color Balance image histogram')
+    plothist(hist(rgb2gray(img_out)), 'k', fig, hist_scb)
+
+    plt.show()
+
+def plothist(h, color, fig=None, ax=None):
     '''
     Show histogram of an image.
 
@@ -27,20 +66,21 @@ def plothist(h, color):
     color : Color to display the histogram e.g. 'r'
     '''
 
-    fig, ax = plt.subplots(1, 1)
+    if fig == None:
+        fig, ax = plt.subplots(1, 1)
 
     ax.stem(h, linefmt = '{}-'.format(color), markerfmt = 'none', basefmt = 'k-', use_line_collection=True)
     ax.set_xlim(0, 255)
     ax.grid('on')
     ax.set_xticklabels([])
+    ax.set_yticklabels([])
 
     cmap = plt.get_cmap('gray', 255)
     norm = mpl.colors.Normalize(vmin=0, vmax=255)
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
     sm.set_array([])
 
-    fig.colorbar(sm, orientation='horizontal')
-    plt.show()
+    fig.colorbar(sm, ax=ax, orientation='horizontal')
 
 def hist(img):
     '''
@@ -182,15 +222,4 @@ if __name__ == '__main__':
 
     print('Wait...')
     out = scb(img, s1, s2)
-
-    fig, (img_og, img_scb) = plt.subplots(ncols=2, nrows=1)
-
-    img_og.imshow(img2uint8(img), cmap='gray')
-    img_og.set_title('Input origunal image')
-    img_og.set_xticks([]), img_og.set_yticks([])
-
-    img_scb.imshow(out, cmap='gray')
-    img_scb.set_title('Output Simplest Color Balance image \n $S_1$ = {} \n $S_2$ = {}'.format(s1, s2))
-    img_scb.set_xticks([]), img_scb.set_yticks([])
-
-    plt.show()
+    plotresult(img, out)
