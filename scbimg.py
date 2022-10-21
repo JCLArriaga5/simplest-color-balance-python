@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -33,7 +35,7 @@ def img2uint8(img):
 
     return np.uint8(img)
 
-def plotresult(img_in, img_out):
+def plotresult(img_in, img_out, s1, s2):
     """
     Plot comparation images before and after Simplest Color Balance
     """
@@ -44,15 +46,13 @@ def plotresult(img_in, img_out):
     img_og.set_title('Input origunal image')
     img_og.set_xticks([]), img_og.set_yticks([])
     hist_og.set_title('Input image histogram')
-    plothist(hist(rgb2gray(img)), 'k', fig, hist_og)
+    plothist(hist(rgb2gray(img_in)), 'k', fig, hist_og)
 
     img_scb.imshow(img_out, cmap='gray')
     img_scb.set_title('Output Simplest Color Balance image \n $S_1$ = {} \n $S_2$ = {}'.format(s1, s2))
     img_scb.set_xticks([]), img_scb.set_yticks([])
     hist_scb.set_title('Output Simplest Color Balance image histogram')
     plothist(hist(rgb2gray(img_out)), 'k', fig, hist_scb)
-
-    plt.show()
 
 def plothist(h, color, fig=None, ax=None):
     '''
@@ -222,4 +222,5 @@ if __name__ == '__main__':
 
     print('Wait...')
     out = scb(img, s1, s2)
-    plotresult(img, out)
+    plotresult(img, out, s1, s2)
+    plt.show()
