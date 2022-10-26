@@ -43,7 +43,7 @@ def plotresult(img_in, img_out, s1, s2):
     fig, ((img_og, img_scb), (hist_og, hist_scb)) = plt.subplots(ncols=2, nrows=2, figsize=(12, 9))
 
     img_og.imshow(img2uint8(img_in), cmap='gray')
-    img_og.set_title('Input origunal image')
+    img_og.set_title('Input original image')
     img_og.set_xticks([]), img_og.set_yticks([])
     hist_og.set_title('Input image histogram')
     plothist(hist(rgb2gray(img_in)), 'k', fig, hist_og)
@@ -69,7 +69,7 @@ def plothist(h, color, fig=None, ax=None):
     if fig == None:
         fig, ax = plt.subplots(1, 1)
 
-    ax.stem(h, linefmt = '{}-'.format(color), markerfmt = 'none', basefmt = 'k-', use_line_collection=True)
+    ax.stem(h, linefmt = '{}-'.format(color), markerfmt = 'none', basefmt = 'k-')
     ax.set_xlim(0, 255)
     ax.grid('on')
     ax.set_xticklabels([])
@@ -220,7 +220,7 @@ if __name__ == '__main__':
     s1 = 1.5
     s2 = 1.5
 
-    print('Wait...')
+    print('Please Wait...')
     out = scb(img, s1, s2)
     plotresult(img, out, s1, s2)
     plt.show()
